@@ -18,6 +18,18 @@ public class InvoiceServiceTest {
 		Double fare = invoiceGeneratorOperations.calculateFare(invoiceGenerator.getDistance(), invoiceGenerator.getTime());
 		Assert.assertEquals(fare,(Double.valueOf(25.0)),0.0);
 	}
+	
+	@Test
+	public void givenLessDistanceAndTime_ShouldReturnMinimumFare() {
+		
+		InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
+		InvoiceGeneratorIF invoiceGeneratorOperations = new InvoiceGeneratorImpl();	
+		Double distance = 0.1;
+		Integer time = 1;
+		createRecord(invoiceGenerator, distance, time);
+		Double fare = invoiceGeneratorOperations.calculateFare(invoiceGenerator.getDistance(), invoiceGenerator.getTime());
+		Assert.assertEquals(fare,(Double.valueOf(5.0)),0.0);
+	}
 
 	private void createRecord(InvoiceGenerator invoiceGenerator, Double distance, Integer time) {
 		
