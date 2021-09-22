@@ -10,7 +10,7 @@ public class InvoiceServiceTest {
 	@Test
 	public void givenDistanceAndTime_ShouldReturnTotalFare() {
 		
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
+		Ride invoiceGenerator = new Ride();
 		InvoiceGeneratorIF invoiceGeneratorOperations = new InvoiceGeneratorImpl();	
 		Double distance = 2.0;
 		Integer time = 5;
@@ -22,7 +22,7 @@ public class InvoiceServiceTest {
 	@Test
 	public void givenLessDistanceAndTime_ShouldReturnMinimumFare() {
 		
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
+		Ride invoiceGenerator = new Ride();
 		InvoiceGeneratorIF invoiceGeneratorOperations = new InvoiceGeneratorImpl();	
 		Double distance = 0.1;
 		Integer time = 1;
@@ -31,7 +31,7 @@ public class InvoiceServiceTest {
 		Assert.assertEquals(fare,(Double.valueOf(5.0)),0.0);
 	}
 
-	private void createRecord(InvoiceGenerator invoiceGenerator, Double distance, Integer time) {
+	private void createRecord(Ride invoiceGenerator, Double distance, Integer time) {
 		
 		try {
 			if(distance<=0)

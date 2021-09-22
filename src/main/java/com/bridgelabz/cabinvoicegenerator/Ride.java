@@ -1,9 +1,9 @@
 package com.bridgelabz.cabinvoicegenerator;
 
-public class InvoiceGenerator {
+public class Ride {
 
-	public final Integer RATE_PER_KILOMETER = 10;
-	public final Integer RATE_PER_MINUTE = 1;
+	public final Integer MINIMUM_RATE_PER_KILOMETER = 10;
+	public final Integer MINIMUM_RATE_PER_MINUTE = 1;
 	
 	private Double distance;
 	private Integer time;
