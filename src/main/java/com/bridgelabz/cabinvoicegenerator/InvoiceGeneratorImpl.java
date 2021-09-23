@@ -1,6 +1,10 @@
 package com.bridgelabz.cabinvoicegenerator;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+
+import com.bridgelabz.cabinvoicegenerator.InvoiceGeneratorException.exceptionType;
 
 public class InvoiceGeneratorImpl implements InvoiceGeneratorIF {
 
@@ -36,5 +40,49 @@ public class InvoiceGeneratorImpl implements InvoiceGeneratorIF {
 		invoiceSummary.setTotalFare(totalFare);
 		invoiceSummary.setAverageFare(totalFare/totalRides);
 		return invoiceSummary;
+	}
+
+	@Override
+	public Ride createRecord(Double distance, Integer time) {
+
+		Ride ride = new Ride();
+		try {
+			if(distance<=0)
+				throw new InvoiceGeneratorException(exceptionType.DISTANCE_INVALID,"Invalid Distance!");
+			ride.setDistance(distance);
+		}
+		catch(NullPointerException e) {
+			throw new InvoiceGeneratorException(exceptionType.DISTANCE_NULL,"Null Distance!");
+		}
+
+		try {
+			if(time<0)
+				throw new InvoiceGeneratorException(exceptionType.TIME_INVALID,"Invalid Time!");
+			ride.setTime(time);
+		}
+		catch(NullPointerException e) {
+			throw new InvoiceGeneratorException(exceptionType.TIME_NULL,"Null Time!");
+		}
+		return ride;
+	}
+
+	@Override
+	public RideRepository createRideRepository(Integer userId, Double[] distance, Integer[] time) {
+
+		RideRepository rideRepository = new RideRepository();
+		List<InvoiceSummary> invoiceSummaries = new ArrayList<>();
+		List<Ride> rides = new LinkedList<Ride>();
+		InvoiceGeneratorIF rideOperations = new InvoiceGeneratorImpl();	
+		for(int index = 0; index < distance.length; index++) {
+
+			Ride ride = new Ride();
+			ride=rideOperations.createRecord(distance[index], time[index]);
+			rides.add(ride);
+		}
+		InvoiceSummary invoiceSumary = rideOperations.calculateSummary(rides);
+		invoiceSummaries.add(invoiceSumary);
+		rideRepository.setUserId(userId);
+		rideRepository.setInvoiceSummaries(invoiceSummaries);
+		return rideRepository;
 	}
 }
