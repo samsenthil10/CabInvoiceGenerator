@@ -9,32 +9,32 @@ import com.bridgelabz.cabinvoicegenerator.InvoiceGeneratorException.exceptionTyp
 public class InvoiceGeneratorImpl implements InvoiceGeneratorIF {
 
 	@Override
-	public Double calculateFare(Ride ride) {
+	public Double calculateNormalFare(Ride ride) {
 
-		Double fare = (ride.MINIMUM_RATE_PER_KILOMETER*ride.getDistance())+(ride.MINIMUM_RATE_PER_MINUTE*ride.getTime());
+		Double fare = (ride.MINIMUM_RATE_PER_KILOMETER_FOR_NORMAL_USER*ride.getDistance())+(ride.MINIMUM_RATE_PER_MINUTE_FOR_NORMAL_USER*ride.getTime());
 		return Math.max(fare, 5.0);
 	}
 
 	@Override
-	public Double calculateFare(List<Ride> rides) {
+	public Double calculateNormalFare(List<Ride> rides) {
 
 		Double totalFare = 0.0;
 		for (Ride ride : rides) {
-			Double total = calculateFare(ride);
+			Double total = calculateNormalFare(ride);
 			totalFare+=total;
 		}
 		return totalFare;
 	}
 
 	@Override
-	public InvoiceSummary calculateSummary(List<Ride> rides) {
+	public InvoiceSummary calculateNormalSummary(List<Ride> rides) {
 
 		InvoiceSummary invoiceSummary = new InvoiceSummary();
 		Integer totalRides = rides.size();
 		invoiceSummary.setTotalNumberOfRides(totalRides);
 		Double totalFare = 0.0;
 		for (Ride ride : rides) {
-			Double total = calculateFare(ride);
+			Double total = calculateNormalFare(ride);
 			totalFare+=total;
 		}
 		invoiceSummary.setTotalFare(totalFare);
@@ -67,7 +67,7 @@ public class InvoiceGeneratorImpl implements InvoiceGeneratorIF {
 	}
 
 	@Override
-	public RideRepository createRideRepository(Integer userId, Double[] distance, Integer[] time) {
+	public RideRepository createNormalRideRepository(Integer userId, Double[] distance, Integer[] time) {
 
 		RideRepository rideRepository = new RideRepository();
 		List<InvoiceSummary> invoiceSummaries = new ArrayList<>();
@@ -79,10 +79,64 @@ public class InvoiceGeneratorImpl implements InvoiceGeneratorIF {
 			ride=rideOperations.createRecord(distance[index], time[index]);
 			rides.add(ride);
 		}
-		InvoiceSummary invoiceSumary = rideOperations.calculateSummary(rides);
+		InvoiceSummary invoiceSumary = rideOperations.calculateNormalSummary(rides);
 		invoiceSummaries.add(invoiceSumary);
 		rideRepository.setUserId(userId);
 		rideRepository.setInvoiceSummaries(invoiceSummaries);
 		return rideRepository;
 	}
+
+	@Override
+	public Double calculatePremiumFare(Ride ride) {
+
+		Double fare = (ride.MINIMUM_RATE_PER_KILOMETER_FOR_PREMIUM_USER*ride.getDistance())+(ride.MINIMUM_RATE_PER_MINUTE_FOR_PREMIUM_USER*ride.getTime());
+		return Math.max(fare, 20.0);
+	}
+
+	@Override
+	public Double calculatePremiumFare(List<Ride> rides) {
+
+		Double totalFare = 0.0;
+		for (Ride ride : rides) {
+			Double total = calculatePremiumFare(ride);
+			totalFare+=total;
+		}
+		return totalFare;
+	}
+
+	@Override
+	public InvoiceSummary calculatePremiumSummary(List<Ride> rides) {
+
+		InvoiceSummary invoiceSummary = new InvoiceSummary();
+		Integer totalRides = rides.size();
+		invoiceSummary.setTotalNumberOfRides(totalRides);
+		Double totalFare = 0.0;
+		for (Ride ride : rides) {
+			Double total = calculatePremiumFare(ride);
+			totalFare+=total;
+		}
+		invoiceSummary.setTotalFare(totalFare);
+		invoiceSummary.setAverageFare(totalFare/totalRides);
+		return invoiceSummary;
+	}
+	@Override
+	public RideRepository createPremiumRideRepository(Integer userId, Double[] distance, Integer[] time) {
+
+		RideRepository rideRepository = new RideRepository();
+		List<InvoiceSummary> invoiceSummaries = new ArrayList<>();
+		List<Ride> rides = new LinkedList<Ride>();
+		InvoiceGeneratorIF rideOperations = new InvoiceGeneratorImpl();	
+		for(int index = 0; index < distance.length; index++) {
+
+			Ride ride = new Ride();
+			ride=rideOperations.createRecord(distance[index], time[index]);
+			rides.add(ride);
+		}
+		InvoiceSummary invoiceSumary = rideOperations.calculatePremiumSummary(rides);
+		invoiceSummaries.add(invoiceSumary);
+		rideRepository.setUserId(userId);
+		rideRepository.setInvoiceSummaries(invoiceSummaries);
+		return rideRepository;
+	}
+
 }
