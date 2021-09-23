@@ -2,8 +2,10 @@ package com.bridgelabz.cabinvoicegenerator;
 
 public class Ride {
 
-	public final Integer MINIMUM_RATE_PER_KILOMETER = 10;
-	public final Integer MINIMUM_RATE_PER_MINUTE = 1;
+	public final Integer MINIMUM_RATE_PER_KILOMETER_FOR_NORMAL_USER = 10;
+	public final Integer MINIMUM_RATE_PER_MINUTE_FOR_NORMAL_USER = 1;
+	public final Integer MINIMUM_RATE_PER_KILOMETER_FOR_PREMIUM_USER = 15;
+	public final Integer MINIMUM_RATE_PER_MINUTE_FOR_PREMIUM_USER = 2;
 	
 	private Double distance;
 	private Integer time;
