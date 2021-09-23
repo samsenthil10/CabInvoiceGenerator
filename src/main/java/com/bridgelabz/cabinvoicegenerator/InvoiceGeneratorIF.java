@@ -1,6 +1,10 @@
 package com.bridgelabz.cabinvoicegenerator;
 
+import java.util.List;
+
 public interface InvoiceGeneratorIF {
 
-	public Double calculateFare(Double distance, Integer time);
+	public Double calculateFare(Ride ride);
+	public Double calculateFare(List<Ride> rides);
+	
 }
