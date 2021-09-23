@@ -1,12 +1,11 @@
 package com.bridgelabz.cabinvoicegenerator;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.bridgelabz.cabinvoicegenerator.InvoiceGeneratorException.exceptionType;
 
 public class InvoiceServiceTest {
 
@@ -17,7 +16,7 @@ public class InvoiceServiceTest {
 		InvoiceGeneratorIF rideOperations = new InvoiceGeneratorImpl();	
 		Double distance = 2.0;
 		Integer time = 5;
-		createRecord(ride, distance, time);
+		ride=rideOperations.createRecord(distance, time);
 		Double fare = rideOperations.calculateFare(ride);
 		Assert.assertEquals(fare,(Double.valueOf(25.0)),0.0);
 	}
@@ -29,7 +28,7 @@ public class InvoiceServiceTest {
 		InvoiceGeneratorIF rideOperations = new InvoiceGeneratorImpl();	
 		Double distance = 0.1;
 		Integer time = 1;
-		createRecord(ride, distance, time);
+		ride=rideOperations.createRecord(distance, time);
 		Double fare = rideOperations.calculateFare(ride);
 		Assert.assertEquals(fare,(Double.valueOf(5.0)),0.0);
 	}
@@ -44,7 +43,7 @@ public class InvoiceServiceTest {
 		for(int index = 0; index < distance.length; index++) {
 
 			Ride ride = new Ride();
-			createRecord(ride, distance[index], time[index]);
+			ride=rideOperations.createRecord(distance[index], time[index]);
 			rides.add(ride);
 		}
 		Double totalFare = rideOperations.calculateFare(rides);
@@ -61,31 +60,26 @@ public class InvoiceServiceTest {
 		for(int index = 0; index < distance.length; index++) {
 
 			Ride ride = new Ride();
-			createRecord(ride, distance[index], time[index]);
+			ride=rideOperations.createRecord(distance[index], time[index]);
 			rides.add(ride);
 		}
 		InvoiceSummary invoiceSumary = rideOperations.calculateSummary(rides);
 		Assert.assertTrue(invoiceSumary.getTotalNumberOfRides().equals(rides.size())&&(invoiceSumary.getTotalFare().equals(30.0))&&invoiceSumary.getAverageFare().equals(15.0));
 	}
 
-	private void createRecord(Ride ride, Double distance, Integer time) {
+	@Test
+	public void givenRideRepositories_ShouldReturnMultipleInvoiceSummary() {
 
-		try {
-			if(distance<=0)
-				throw new InvoiceGeneratorException(exceptionType.DISTANCE_INVALID,"Invalid Distance!");
-			ride.setDistance(distance);
-		}
-		catch(NullPointerException e) {
-			throw new InvoiceGeneratorException(exceptionType.DISTANCE_NULL,"Null Distance!");
-		}
-
-		try {
-			if(time<0)
-				throw new InvoiceGeneratorException(exceptionType.TIME_INVALID,"Invalid Time!");
-			ride.setTime(time);
-		}
-		catch(NullPointerException e) {
-			throw new InvoiceGeneratorException(exceptionType.TIME_NULL,"Null Time!");
-		}
+		RideRepository rideRepository1 = new RideRepository();
+		RideRepository rideRepository2 = new RideRepository();
+		InvoiceGeneratorIF rideOperations = new InvoiceGeneratorImpl();
+		Double distance1[] = {0.1,2.0};
+		Integer time1[] = {1,5};
+		Double distance2[] = {0.5,2.0,7.0};
+		Integer time2[] = {1,5,3};
+		rideRepository1= rideOperations.createRideRepository(1,distance1,time1);
+		rideRepository2= rideOperations.createRideRepository(2,distance2,time2);
+		Assert.assertEquals(rideRepository1.getInvoiceSummaries().size(),1);
+		Assert.assertEquals(rideRepository2.getInvoiceSummaries().size(),1);
 	}
 }
