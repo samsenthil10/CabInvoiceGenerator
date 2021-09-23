@@ -51,6 +51,23 @@ public class InvoiceServiceTest {
 		Assert.assertEquals(totalFare,(Double.valueOf(30.0)),0.0);
 	}
 
+	@Test
+	public void givenMultipleRide_ShouldReturnInvoiceSummary() {
+
+		List<Ride> rides = new LinkedList<Ride>();
+		InvoiceGeneratorIF rideOperations = new InvoiceGeneratorImpl();	
+		Double distance[] = {0.1,2.0};
+		Integer time[] = {1,5};
+		for(int index = 0; index < distance.length; index++) {
+
+			Ride ride = new Ride();
+			createRecord(ride, distance[index], time[index]);
+			rides.add(ride);
+		}
+		InvoiceSummary invoiceSumary = rideOperations.calculateSummary(rides);
+		Assert.assertTrue(invoiceSumary.getTotalNumberOfRides().equals(rides.size())&&(invoiceSumary.getTotalFare().equals(30.0))&&invoiceSumary.getAverageFare().equals(15.0));
+	}
+
 	private void createRecord(Ride ride, Double distance, Integer time) {
 
 		try {
